@@ -34,11 +34,13 @@ class TicTacToe {
                         if (!winner) {
                             disabledInputs = !disabledInputs;
                             if (this.turn_number > Math.pow(this.field_size, 2)) {
+                                this.sendData(winner.name, this.players, this.field_size);
                                 this.openWinForm("Ничья");
                             }
                         }
                         else {
                             disabledInputs = !disabledInputs;
+                            this.sendData(winner.name, this.players, this.field_size);
                             this.openWinForm(`Победил ${winner.name}`);
                         }
                     }
@@ -46,7 +48,23 @@ class TicTacToe {
             }
         }
     }
-
+    
+    sendData(winnerData, playersData, fieldSizeData){
+        let data = {
+            winner: winnerData,
+            players: playersData,
+            fieldSize: fieldSizeData
+        };
+        let request = new Request("http://localhost:3001/api/game", {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        fetch(request, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+    }
 
     disableInputs(flag){
         document.getElementById("field-size").disabled = flag;
